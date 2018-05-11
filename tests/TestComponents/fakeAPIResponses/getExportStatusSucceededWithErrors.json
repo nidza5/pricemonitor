@@ -1,0 +1,32 @@
+{
+  "state": "succeeded",
+  "data": {
+    "inputId": "d954b0b7-d363-454e-a15f-f58f68751862"
+  },
+  "contractId": "3p7h3i",
+  "failures": [
+    {
+      "messageId": "Minimal price boundary is greater than maximal price boundary",
+      "attributes": {
+        "gtin": 45073939
+      }
+    },
+    {
+      "messageId": "Reference price can not be 0.",
+      "attributes": {
+        "gtin": 45073939
+      }
+    },
+    {
+      "messageId": "Minimal price boundary is greater than maximal price boundary",
+      "attributes": {
+        "gtin": 45035982
+      }
+    }
+  ],
+  "creationDate": "2017-09-08T12:40:37.945Z",
+  "taskType": "backend.tasks.vendor.products.put",
+  "finishDate": "2017-09-08T12:40:38.195Z",
+  "startDate": "2017-09-08T12:40:37.954Z",
+  "taskId": "c86070f0-98eb-4797-86e8-c72d14f56fbd"
+}

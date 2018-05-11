@@ -1,0 +1,45 @@
+{
+  "id": 997,
+  "name": "Test Name",
+  "email": "test@example.com",
+  "roles": [
+    "user"
+  ],
+  "companies": [
+    {
+      "name": "Logeecom d.o.o.",
+      "contracts": [
+        {
+          "name": "Test account for shopware",
+          "id": 1277,
+          "sid": "3p7h3i",
+          "type": "Pricemonitor for resellers",
+          "active": true
+        },{
+          "name": "Test account for shopware 1",
+          "id": 1278,
+          "sid": "3p7h3j",
+          "type": "Pricemonitor for resellers",
+          "active": true
+        },{
+          "name": "Test account for shopware 2",
+          "id": 1279,
+          "sid": "3p7h3k",
+          "type": "Pricemonitor for resellers",
+          "active": false
+        }
+      ]
+    },{
+      "name": "Other Logeecom d.o.o.",
+      "contracts": [
+        {
+          "name": "Test account for shopware 3",
+          "id": 1280,
+          "sid": "3p7h3l",
+          "type": "Pricemonitor for resellers",
+          "active": true
+        }
+      ]
+    }
+  ]
+}

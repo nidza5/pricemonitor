@@ -1,0 +1,23 @@
+{
+    "name": "patagona/pricemonitor-core",
+    "description": "Core pricemonitor integration library",
+    "type": "library",
+    "license": "proprietary",
+    "require": {
+        "php": ">=5.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Patagona\\Pricemonitor\\Core\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Patagona\\Pricemonitor\\Core\\Tests\\": "tests"
+        },
+        "files": [ "tests/constants.php" ]
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7"
+    }
+}

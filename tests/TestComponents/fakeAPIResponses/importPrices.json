@@ -1,0 +1,29 @@
+{
+  "priceRecommendations": [
+    {
+      "gtin": 12345678,
+      "identifier": "1",
+      "recommendedPrice": 2.85
+    },
+    {
+      "gtin": 12345679,
+      "identifier": "2",
+      "recommendedPrice": 1.25
+    },
+    {
+      "gtin": 12345680,
+      "identifier": "3",
+      "recommendedPrice": 3.05
+    },
+    {
+      "gtin": 12345681,
+      "identifier": "4",
+      "recommendedPrice": 4.48
+    },
+    {
+      "gtin": 12345682,
+      "identifier": "5",
+      "recommendedPrice": 156.99
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "state": "succeeded",
+  "data": {
+    "inputId": "3e9a9938-7d40-4b85-b046-739f54aac1d5"
+  },
+  "contractId": "3p7h3i",
+  "failures": [],
+  "creationDate": "2017-09-05T08:58:33.312Z",
+  "taskType": "backend.tasks.vendor.products.put",
+  "finishDate": "2017-09-05T08:58:33.533Z",
+  "startDate": "2017-09-05T08:58:33.329Z",
+  "taskId": "e4608054-f6ec-4061-89cb-7534a9933655"
+}
