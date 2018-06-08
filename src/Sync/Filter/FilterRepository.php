@@ -33,7 +33,9 @@ class FilterRepository
             throw new \Exception("Filter for contract {$contractId} is not valid.");
         }
 
-        $this->filterStorage->saveFilter($contractId, $filter->getType(), serialize($filter));
+        return serialize($filter);
+
+       // $this->filterStorage->saveFilter($contractId, $filter->getType(), serialize($filter));
     }
 
     /**
