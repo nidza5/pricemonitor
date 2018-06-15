@@ -110,7 +110,7 @@ class Queue
             return false;
         }
         
-        return $result;
+        return $storageModel;
     }
 
     /**
