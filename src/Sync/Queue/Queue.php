@@ -99,10 +99,10 @@ class Queue
     {
         try {
             $storageModel = $queueJob->getStorageModel();
-
-            $this->storage->beginTransaction();
-            $result = $this->storage->save($this->queueName, $storageModel);
-            $this->storage->commit();
+            
+            // $this->storage->beginTransaction();
+            // $result = $this->storage->save($this->queueName, $storageModel);
+            // $this->storage->commit();
         } catch (Exception $ex) {
             $this->storage->rollBack();
             Logger::logError('Could not enqueue queue job');
