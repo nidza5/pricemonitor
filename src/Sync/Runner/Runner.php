@@ -90,6 +90,7 @@ class Runner
                 }
                 
                 $uniqueIdentifiers[] = $ex->getMessage();
+                
                 $this->queue->release();
                 Logger::logError(sprintf(
                     'Queue job execution failed. Releasing job to queue for execution retry. Info %s. Original job failure message: %s',
