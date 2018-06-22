@@ -66,6 +66,7 @@ class Runner
 
             $numberOfAttempts = $storageModel->getAttempts();
             if ($numberOfAttempts > self::MAX_NUMBER_OF_ATTEMPTS) {
+                $uniqueIdentifiers[] = 7;
                 $this->failJob($queueJob, 'Execution time exceeded.');
                 continue;
             }
@@ -92,6 +93,8 @@ class Runner
                     $queueJobInfo,
                     $ex->getMessage()
                 ));
+
+                $uniqueIdentifiers[] = 5;
             }
         }
 
