@@ -55,6 +55,7 @@ class Runner
         $uniqueIdentifiers = array();
         $startTime = new DateTime();
         while ($this->executionTimeNotExceeded($startTime) && ($queueJob = $this->queue->reserve()) != null) {
+            $uniqueIdentifiers[] = 15;
             $storageModel = $queueJob->getStorageModel();
             $queueJobInfo = '(Job id: ' . $storageModel->getId() . '; Queue name: ' . $this->queueName . ';)';
             if (!is_a($queueJob, SystemJob::class)) {
