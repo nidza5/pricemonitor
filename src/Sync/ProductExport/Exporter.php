@@ -46,7 +46,7 @@ class Exporter
             $exportUniqueIdentifier = $this->exportProducts($transactionId);
             $this->enqueueStatusCheckerJob($exportUniqueIdentifier);
         } catch (Exception $ex) {
-            $exportUniqueIdentifier = null;
+            $exportUniqueIdentifier = -1;
             $this->transactionHistory->finishTransaction(
                 $this->contractId,
                 TransactionHistoryStatus::FAILED,
