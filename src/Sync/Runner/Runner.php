@@ -54,6 +54,23 @@ class Runner
     {
         $uniqueIdentifiers = array();
         $startTime = new DateTime();
+
+        if($queueJob = $this->queue->reserve() != null) {
+            echo "Quieeee";
+        }
+        else {
+            echo "Ne";
+        }     
+
+        if($this->executionTimeNotExceeded($startTime)) {
+            echo "execution time true";
+            echo $startTime;
+        } else {
+             echo "execution time false";
+             echo $startTime;
+        }
+
+
         while ($this->executionTimeNotExceeded($startTime) && ($queueJob = $this->queue->reserve()) != null) {
             $uniqueIdentifiers[] = 15;
             $storageModel = $queueJob->getStorageModel();
