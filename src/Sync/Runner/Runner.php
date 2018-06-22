@@ -80,17 +80,19 @@ class Runner
                     ));
                 }
             } catch (Exception $ex) {
-                if ($numberOfAttempts >= self::MAX_NUMBER_OF_ATTEMPTS) {
-                    $this->failJob($queueJob, $ex->getMessage());
-                    continue;
-                }
+                // if ($numberOfAttempts >= self::MAX_NUMBER_OF_ATTEMPTS) {
+                //     $this->failJob($queueJob, $ex->getMessage());
+                //     continue;
+                // }
                 
-                $this->queue->release();
-                Logger::logError(sprintf(
-                    'Queue job execution failed. Releasing job to queue for execution retry. Info %s. Original job failure message: %s',
-                    $queueJobInfo,
-                    $ex->getMessage()
-                ));
+                // $this->queue->release();
+                // Logger::logError(sprintf(
+                //     'Queue job execution failed. Releasing job to queue for execution retry. Info %s. Original job failure message: %s',
+                //     $queueJobInfo,
+                //     $ex->getMessage()
+                // ));
+
+                return -1;
             }
         }
 
