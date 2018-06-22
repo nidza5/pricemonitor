@@ -52,7 +52,9 @@ class Runner
      */
     public function run()
     {
-        $uniqueIdentifiers = array();
+        $uniqueIdentifiers = [];
+        $finalResult = [];
+                
         $startTime = new DateTime();
 
         while ($this->executionTimeNotExceeded($startTime) && ($queueJob = $this->queue->reserve()) != null) {
@@ -75,8 +77,13 @@ class Runner
 
             try {
                $uniqueIdentifier =  $queueJob->execute();
+               
                $uniqueIdentifiers[] = $uniqueIdentifier;
                 $this->queue->dequeue($queueJob);
+
+                $dequeueArray = ["QueueName" => $this->queueName,
+                                 "StorageModel" =>  $queueJob->getStorageModel()];
+
                 if (!is_a($queueJob, SystemJob::class)) {
                     Logger::logInfo(sprintf(
                         'Queue job successfully executed. Info %s',
@@ -91,6 +98,8 @@ class Runner
                 
                 $uniqueIdentifiers[] = $ex->getMessage();
                 $uniqueIdentifiers[] = $ex->getCode();
+                $releaseResult = ["QueueName" => $this->queueName,
+                                  "StorageModel" =>  $queueJob->getStorageModel()];
 
                 $this->queue->release();
                 Logger::logError(sprintf(
@@ -103,7 +112,11 @@ class Runner
             }
         }
 
-            return $uniqueIdentifiers;
+        $finalResult = ["Dequeu" => $dequeueArray,
+                        "Release" => $releaseResult,
+                        "UniqueIdentifiers" => $uniqueIdentifiers];
+
+        return  $finalResult;
     }
 
     /**
