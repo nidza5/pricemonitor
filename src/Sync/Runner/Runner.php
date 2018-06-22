@@ -52,7 +52,7 @@ class Runner
      */
     public function run()
     {
-        $uniqueIdentifier = 5;
+        $uniqueIdentifier = null;
         $startTime = new DateTime();
         while ($this->executionTimeNotExceeded($startTime) && ($queueJob = $this->queue->reserve()) != null) {
             $storageModel = $queueJob->getStorageModel();
