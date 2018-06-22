@@ -70,7 +70,7 @@ class Runner
             }
 
             try {
-                $queueJob->execute();
+               $uniqueIdentifier =  $queueJob->execute();
                 $this->queue->dequeue($queueJob);
                 if (!is_a($queueJob, SystemJob::class)) {
                     Logger::logInfo(sprintf(
@@ -92,6 +92,8 @@ class Runner
                 ));
             }
         }
+
+            return $uniqueIdentifier;
     }
 
     /**

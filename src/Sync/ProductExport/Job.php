@@ -71,7 +71,8 @@ class Job extends QueueJob
             $this->contractId, 
             TransactionHistoryType::EXPORT_PRODUCTS
         );
-        $exporter->execute($this->transactionId);
+        
+        return  $exporter->execute($this->transactionId);
     }
 
     public function forceFail()
