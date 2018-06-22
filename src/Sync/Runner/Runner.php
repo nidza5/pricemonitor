@@ -55,46 +55,44 @@ class Runner
         $uniqueIdentifiers = array();
         $startTime = new DateTime();
         while ($this->executionTimeNotExceeded($startTime) && ($queueJob = $this->queue->reserve()) != null) {
-            // $storageModel = $queueJob->getStorageModel();
-            // $queueJobInfo = '(Job id: ' . $storageModel->getId() . '; Queue name: ' . $this->queueName . ';)';
-            // if (!is_a($queueJob, SystemJob::class)) {
-            //     Logger::logInfo(sprintf(
-            //         'Queue job reserved. Info %s',
-            //         $queueJobInfo
-            //     ));
-            // }
+            $storageModel = $queueJob->getStorageModel();
+            $queueJobInfo = '(Job id: ' . $storageModel->getId() . '; Queue name: ' . $this->queueName . ';)';
+            if (!is_a($queueJob, SystemJob::class)) {
+                Logger::logInfo(sprintf(
+                    'Queue job reserved. Info %s',
+                    $queueJobInfo
+                ));
+            }
 
-            // $numberOfAttempts = $storageModel->getAttempts();
-            // if ($numberOfAttempts > self::MAX_NUMBER_OF_ATTEMPTS) {
-            //     $this->failJob($queueJob, 'Execution time exceeded.');
-            //     continue;
-            // }
+            $numberOfAttempts = $storageModel->getAttempts();
+            if ($numberOfAttempts > self::MAX_NUMBER_OF_ATTEMPTS) {
+                $this->failJob($queueJob, 'Execution time exceeded.');
+                continue;
+            }
 
-            // try {
-            //    $uniqueIdentifier =  $queueJob->execute();
-            //    $uniqueIdentifiers[] = $uniqueIdentifier;
-            //     $this->queue->dequeue($queueJob);
-            //     if (!is_a($queueJob, SystemJob::class)) {
-            //         Logger::logInfo(sprintf(
-            //             'Queue job successfully executed. Info %s',
-            //             $queueJobInfo
-            //         ));
-            //     }
-            // } catch (Exception $ex) {
-            //     if ($numberOfAttempts >= self::MAX_NUMBER_OF_ATTEMPTS) {
-            //         $this->failJob($queueJob, $ex->getMessage());
-            //         continue;
-            //     }
+            try {
+               $uniqueIdentifier =  $queueJob->execute();
+               $uniqueIdentifiers[] = $uniqueIdentifier;
+                $this->queue->dequeue($queueJob);
+                if (!is_a($queueJob, SystemJob::class)) {
+                    Logger::logInfo(sprintf(
+                        'Queue job successfully executed. Info %s',
+                        $queueJobInfo
+                    ));
+                }
+            } catch (Exception $ex) {
+                if ($numberOfAttempts >= self::MAX_NUMBER_OF_ATTEMPTS) {
+                    $this->failJob($queueJob, $ex->getMessage());
+                    continue;
+                }
                 
-            //     $this->queue->release();
-            //     Logger::logError(sprintf(
-            //         'Queue job execution failed. Releasing job to queue for execution retry. Info %s. Original job failure message: %s',
-            //         $queueJobInfo,
-            //         $ex->getMessage()
-            //     ));
-            // }
-
-            $uniqueIdentifiers[] = 10;
+                $this->queue->release();
+                Logger::logError(sprintf(
+                    'Queue job execution failed. Releasing job to queue for execution retry. Info %s. Original job failure message: %s',
+                    $queueJobInfo,
+                    $ex->getMessage()
+                ));
+            }
         }
 
             return $uniqueIdentifiers;
