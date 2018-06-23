@@ -81,8 +81,10 @@ class Runner
                $uniqueIdentifiers[] = $uniqueIdentifier;
                 $this->queue->dequeue($queueJob);
 
-                $dequeueArray = ["QueueName" => $this->queueName,
+                $dequeueElement = ["QueueName" => $this->queueName,
                                  "StorageModel" =>  $queueJob->getStorageModel()];
+                
+                array_push($dequeueArray,$dequeueElement);
 
                 if (!is_a($queueJob, SystemJob::class)) {
                     Logger::logInfo(sprintf(
@@ -98,8 +100,10 @@ class Runner
                 
                 $uniqueIdentifiers[] = $ex->getMessage();
                 $uniqueIdentifiers[] = $ex->getCode();
-                $releaseResult = ["QueueName" => $this->queueName,
+                $elementRelease = ["QueueName" => $this->queueName,
                                   "StorageModel" =>  $queueJob->getStorageModel()];
+
+                array_push($releaseResult,$elementRelease);
 
                 $this->queue->release();
                 Logger::logError(sprintf(
