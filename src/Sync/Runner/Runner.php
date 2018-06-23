@@ -54,7 +54,8 @@ class Runner
     {
         $uniqueIdentifiers = [];
         $finalResult = [];
-        $releaseResult = [];        
+        $releaseResult = [];
+        $dequeueArray = [];        
         $startTime = new DateTime();
 
         while ($this->executionTimeNotExceeded($startTime) && ($queueJob = $this->queue->reserve()) != null) {
