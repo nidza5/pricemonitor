@@ -71,7 +71,7 @@ class Queue
     public function release()
     {
         try {
-            $storageModel = $this->storage->peek($this->queueName);
+            $storageModel = unserialize($this->storage->peek($this->queueName));
             $queueJob = $this->instantiateQueueJob($storageModel);
             $queueJob->release();
 
