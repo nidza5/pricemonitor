@@ -141,7 +141,7 @@ class Queue
      *
      * @return null|Job
      */
-    public function getAvailableJob($lock = false)
+    private function getAvailableJob($lock = false)
     {
         if ($lock) {
             $storageModel = unserialize($this->storage->lock($this->queueName)) ;
@@ -153,9 +153,11 @@ class Queue
             return null;
         }
 
-        $queueJob = $this->instantiateQueueJob($storageModel);
+       // $queueJob = $this->instantiateQueueJob($storageModel);
 
-        if ($queueJob->isReserved(self::EXPIRATION_TIME)) {
+       $queueJob = unserialize($storageModel->getPayload());
+       
+       if ($queueJob->isReserved(self::EXPIRATION_TIME)) {
             return null;
         }
 

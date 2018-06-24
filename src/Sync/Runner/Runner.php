@@ -58,7 +58,11 @@ class Runner
         $dequeueArray = [];        
         $startTime = new DateTime();
 
-        while ($this->executionTimeNotExceeded($startTime) && ($queueJob = $this->queue->getAvailableJob()) != null) {
+        $uniqueIdentifiers[] = 13;
+        $queueJob1 = $this->queue->reserve();
+        $uniqueIdentifiers[] =  json_encode($queueJob1);
+
+        while ($this->executionTimeNotExceeded($startTime) && ($queueJob = $this->queue->reserve()) != null) {
             $uniqueIdentifiers[] = 14;
             $uniqueIdentifiers[] =  json_encode($queueJob);
             
