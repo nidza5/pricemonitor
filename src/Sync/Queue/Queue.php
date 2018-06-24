@@ -153,9 +153,7 @@ class Queue
             return null;
         }
 
-       // $queueJob = $this->instantiateQueueJob($storageModel);
-
-       $queueJob = unserialize($storageModel->getPayload());
+       $queueJob = $this->instantiateQueueJob($storageModel);
        
        if ($queueJob->isReserved(self::EXPIRATION_TIME)) {
             return null;
