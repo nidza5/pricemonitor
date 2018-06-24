@@ -168,8 +168,8 @@ class Queue
 
     public function getAvailableJobTest()
     {
-            $storageModel = unserialize($this->storage->peek($this->queueName));
-        
+        $storageModel = unserialize(ServiceRegister::getQueueStorage()->peek($queueName));
+            
 
         if (empty($storageModel)) {
             return null;
