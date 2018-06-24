@@ -144,9 +144,9 @@ class Queue
     private function getAvailableJob($lock = false)
     {
         if ($lock) {
-            $storageModel = $this->storage->lock($this->queueName);
+            $storageModel = unserialize($this->storage->lock($this->queueName)) ;
         } else {
-            $storageModel = $this->storage->peek($this->queueName);
+            $storageModel = unserialize($this->storage->peek($this->queueName));
         }
 
         if (empty($storageModel)) {
