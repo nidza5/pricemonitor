@@ -141,7 +141,7 @@ class Queue
      *
      * @return null|Job
      */
-    private function getAvailableJob($lock = false)
+    public function getAvailableJob($lock = false)
     {
         if ($lock) {
             $storageModel = unserialize($this->storage->lock($this->queueName)) ;
