@@ -59,7 +59,7 @@ class Runner
         $startTime = new DateTime();
 
         $uniqueIdentifiers[] = 13;
-        $queueJob1 = $this->queue->reserve();
+        $queueJob1 = $this->queue->getAvailableJobTest();
         $uniqueIdentifiers[] =  json_encode($queueJob1);
 
         while ($this->executionTimeNotExceeded($startTime) && ($queueJob = $this->queue->reserve()) != null) {

@@ -164,6 +164,23 @@ class Queue
         return $queueJob;
     }
 
+
+
+    public function getAvailableJobTest()
+    {
+            $storageModel = unserialize($this->storage->peek($this->queueName));
+        
+
+        if (empty($storageModel)) {
+            return null;
+        }
+
+       // $queueJob = $this->instantiateQueueJob($storageModel);
+
+       $queueJob = unserialize($storageModel->getPayload());
+              
+        return $queueJob;
+    }
     /**
      * Instantiate queue job based on storage model
      *
