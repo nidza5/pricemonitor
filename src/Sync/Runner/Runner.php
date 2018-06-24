@@ -78,7 +78,7 @@ class Runner
 
             try {
 
-                $uniqueIdentifiers[] = $queueJob->contractId;
+                $uniqueIdentifiers[] =  json_encode($queueJob);
 
                $uniqueIdentifier =  $queueJob->execute();
                
