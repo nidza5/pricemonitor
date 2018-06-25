@@ -40,13 +40,12 @@ class Exporter
      * @param $transactionId
      * @throws Exception
      */
-    public function execute($transactionId,$runCustomMethod = false)
+    public function execute($transactionId)
     {
         try {
             $exportUniqueIdentifier = $this->exportProducts($transactionId);
             $this->enqueueStatusCheckerJob($exportUniqueIdentifier);
         } catch (Exception $ex) {
-            $exportUniqueIdentifier = -1;
             $this->transactionHistory->finishTransaction(
                 $this->contractId,
                 TransactionHistoryStatus::FAILED,
@@ -57,8 +56,6 @@ class Exporter
             );
             throw $ex;
         }
-
-        return  $exportUniqueIdentifier;
     }
 
     /**

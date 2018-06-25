@@ -58,7 +58,7 @@ class Job extends QueueJob
     /**
      * Run queue job execution
      */
-    public function execute($runCustomMethod = false)
+    public function execute()
     {
         $apiCredentials = ServiceRegister::getConfigService()->getCredentials();
         $importer = new Importer(
@@ -71,7 +71,7 @@ class Job extends QueueJob
             $this->contractId, 
             TransactionHistoryType::IMPORT_PRICES
         );
-        return $importer->execute($this->transactionId,$runCustomMethod);
+        $importer->execute($this->transactionId);
     }
 
     public function forceFail()

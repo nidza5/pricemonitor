@@ -58,7 +58,7 @@ class Job extends QueueJob
     /**
      * Run queue job execution
      */
-    public function execute($runCustomMethod = false)
+    public function execute()
     {
         $apiCredentials = ServiceRegister::getConfigService()->getCredentials();
         $exporter = new Exporter(
@@ -71,8 +71,7 @@ class Job extends QueueJob
             $this->contractId, 
             TransactionHistoryType::EXPORT_PRODUCTS
         );
-        
-        return  $exporter->execute($this->transactionId,$runCustomMethod);
+        $exporter->execute($this->transactionId);
     }
 
     public function forceFail()

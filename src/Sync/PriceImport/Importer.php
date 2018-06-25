@@ -50,12 +50,12 @@ class Importer
      *
      * @throws \Exception
      */
-    public function execute($transactionId,$runCustomMethod = false)
+    public function execute($transactionId)
     {
         $importStartedAtTimestamp = (new \DateTime())->getTimestamp();
 
         try {
-            return $runCustomMethod == true ? $this->updatePricesCustomMethod($transactionId, $this->getLastImportDate()) : $this->updatePrices($transactionId, $this->getLastImportDate());
+            $errors = $this->updatePrices($transactionId, $this->getLastImportDate());
             if (!empty($errors)) {
                 $this->logErrors($errors);
             }
@@ -81,40 +81,15 @@ class Importer
      * @param \DateTime|null $lastImportDate Date time of last price import (leave empty or set null if there was no imports)
      * @return array List of import errors from price service
      */
-    private function updatePricesCustomMethod($transactionId, \DateTime $lastImportDate = null)
-    {
-        $start = 0;
-        $allPrices = [];
-
-        $prices = $this->proxy->importPrices($this->contractId, $start, self::BATCH_SIZE, $lastImportDate);
-
-        while (!empty($prices)) {
-           
-            $allPrices.push($prices);
-            $start += self::BATCH_SIZE;
-            $prices = $this->proxy->importPrices($this->contractId, $start, self::BATCH_SIZE, $lastImportDate);
-        }
-
-        return $allPrices;
-    }
-
-
-    /**
-     * Updates price in batches using price integration service
-     *
-     * @param $transactionId
-     * @param \DateTime|null $lastImportDate Date time of last price import (leave empty or set null if there was no imports)
-     * @return array List of import errors from price service
-     */
     private function updatePrices($transactionId, \DateTime $lastImportDate = null)
     {
         $start = 0;
-        $allPrices = [];
+        $allNotImportedPrices = [];
 
         $prices = $this->proxy->importPrices($this->contractId, $start, self::BATCH_SIZE, $lastImportDate);
 
         while (!empty($prices)) {
-            // /** @var TransactionHistoryDetail[] $formattedTransactionDetails */
+            /** @var TransactionHistoryDetail[] $formattedTransactionDetails */
             $transactionDetails = $this->transactionHistory->updateTransaction(
                 $this->contractId,
                 TransactionHistoryType::IMPORT_PRICES,
@@ -137,7 +112,6 @@ class Importer
                 $failedItems
             );
 
-            $allPrices.push($prices);
             $start += self::BATCH_SIZE;
             $prices = $this->proxy->importPrices($this->contractId, $start, self::BATCH_SIZE, $lastImportDate);
         }
@@ -150,7 +124,7 @@ class Importer
             null
         );
 
-        return $allPrices;
+        return $allNotImportedPrices;
     }
 
     private function createNotImportedPrices($prices, &$transactionDetails)

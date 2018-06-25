@@ -71,7 +71,7 @@ class Queue
     public function release()
     {
         try {
-            $storageModel = unserialize($this->storage->peek($this->queueName));
+            $storageModel = $this->storage->peek($this->queueName);
             $queueJob = $this->instantiateQueueJob($storageModel);
             $queueJob->release();
 
@@ -144,41 +144,24 @@ class Queue
     private function getAvailableJob($lock = false)
     {
         if ($lock) {
-            $storageModel = unserialize($this->storage->lock($this->queueName)) ;
+            $storageModel = $this->storage->lock($this->queueName);
         } else {
-            $storageModel = unserialize($this->storage->peek($this->queueName));
+            $storageModel = $this->storage->peek($this->queueName);
         }
 
         if (empty($storageModel)) {
             return null;
         }
 
-       $queueJob = $this->instantiateQueueJob($storageModel);
-       
-       if ($queueJob->isReserved(self::EXPIRATION_TIME)) {
+        $queueJob = $this->instantiateQueueJob($storageModel);
+
+        if ($queueJob->isReserved(self::EXPIRATION_TIME)) {
             return null;
         }
 
         return $queueJob;
     }
 
-
-
-    public function getAvailableJobTest()
-    {
-        $storageModel = unserialize(ServiceRegister::getQueueStorage()->peek($queueName));
-            
-
-        if (empty($storageModel)) {
-            return null;
-        }
-
-       // $queueJob = $this->instantiateQueueJob($storageModel);
-
-       $queueJob = unserialize($storageModel->getPayload());
-              
-        return $queueJob;
-    }
     /**
      * Instantiate queue job based on storage model
      *

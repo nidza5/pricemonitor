@@ -50,23 +50,10 @@ class Runner
     /**
      * Run queue job execution from queue
      */
-    public function run($runCustomMethod = false)
+    public function run()
     {
-        $uniqueIdentifiers = [];
-        $finalResult = [];
-        $releaseResult = [];
-        $dequeueArray = [];        
         $startTime = new DateTime();
-
-        $uniqueIdentifiers[] = 13;
-        $queueJob1 = $this->queue->getAvailableJobTest();
-        $uniqueIdentifiers[] =  json_encode($queueJob1);
-
         while ($this->executionTimeNotExceeded($startTime) && ($queueJob = $this->queue->reserve()) != null) {
-            $uniqueIdentifiers[] = 14;
-            $uniqueIdentifiers[] =  json_encode($queueJob);
-            
-            $uniqueIdentifiers[] = 15;
             $storageModel = $queueJob->getStorageModel();
             $queueJobInfo = '(Job id: ' . $storageModel->getId() . '; Queue name: ' . $this->queueName . ';)';
             if (!is_a($queueJob, SystemJob::class)) {
@@ -78,25 +65,13 @@ class Runner
 
             $numberOfAttempts = $storageModel->getAttempts();
             if ($numberOfAttempts > self::MAX_NUMBER_OF_ATTEMPTS) {
-                $uniqueIdentifiers[] = 7;
                 $this->failJob($queueJob, 'Execution time exceeded.');
                 continue;
             }
 
             try {
-
-                $uniqueIdentifiers[] =  json_encode($queueJob);
-
-               $uniqueIdentifier =  $queueJob->execute($runCustomMethod);
-               
-               $uniqueIdentifiers[] = $uniqueIdentifier;
+                $queueJob->execute();
                 $this->queue->dequeue($queueJob);
-
-                $dequeueElement = ["QueueName" => $this->queueName,
-                                 "StorageModel" =>  $queueJob->getStorageModel()];
-                
-                array_push($dequeueArray,$dequeueElement);
-
                 if (!is_a($queueJob, SystemJob::class)) {
                     Logger::logInfo(sprintf(
                         'Queue job successfully executed. Info %s',
@@ -109,29 +84,14 @@ class Runner
                     continue;
                 }
                 
-                $uniqueIdentifiers[] = $ex->getMessage();
-                $uniqueIdentifiers[] = $ex->getCode();
-                $elementRelease = ["QueueName" => $this->queueName,
-                                  "StorageModel" =>  $queueJob->getStorageModel()];
-
-                array_push($releaseResult,$elementRelease);
-
                 $this->queue->release();
                 Logger::logError(sprintf(
                     'Queue job execution failed. Releasing job to queue for execution retry. Info %s. Original job failure message: %s',
                     $queueJobInfo,
                     $ex->getMessage()
                 ));
-
-                $uniqueIdentifiers[] = 5;
             }
         }
-
-        $finalResult = ["Dequeu" => $dequeueArray,
-                        "Release" => $releaseResult,
-                        "UniqueIdentifiers" => $uniqueIdentifiers];
-
-        return  $finalResult;
     }
 
     /**
