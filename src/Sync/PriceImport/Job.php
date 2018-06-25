@@ -71,7 +71,7 @@ class Job extends QueueJob
             $this->contractId, 
             TransactionHistoryType::IMPORT_PRICES
         );
-        $importer->execute($this->transactionId);
+        return $importer->execute($this->transactionId);
     }
 
     public function forceFail()

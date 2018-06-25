@@ -55,7 +55,7 @@ class Importer
         $importStartedAtTimestamp = (new \DateTime())->getTimestamp();
 
         try {
-            $errors = $this->updatePrices($transactionId, $this->getLastImportDate());
+            return $this->updatePrices($transactionId, $this->getLastImportDate());
             if (!empty($errors)) {
                 $this->logErrors($errors);
             }
@@ -84,47 +84,48 @@ class Importer
     private function updatePrices($transactionId, \DateTime $lastImportDate = null)
     {
         $start = 0;
-        $allNotImportedPrices = [];
+        $allPrices = [];
 
         $prices = $this->proxy->importPrices($this->contractId, $start, self::BATCH_SIZE, $lastImportDate);
 
         while (!empty($prices)) {
-            /** @var TransactionHistoryDetail[] $formattedTransactionDetails */
-            $transactionDetails = $this->transactionHistory->updateTransaction(
-                $this->contractId,
-                TransactionHistoryType::IMPORT_PRICES,
-                $transactionId,
-                $this->createImportDetailsBasedOnPrices($prices, $transactionId),
-                null
-            );
+            // /** @var TransactionHistoryDetail[] $formattedTransactionDetails */
+            // $transactionDetails = $this->transactionHistory->updateTransaction(
+            //     $this->contractId,
+            //     TransactionHistoryType::IMPORT_PRICES,
+            //     $transactionId,
+            //     $this->createImportDetailsBasedOnPrices($prices, $transactionId),
+            //     null
+            // );
 
-            $batchNotImportedPrices = $this->createNotImportedPrices($prices, $transactionDetails);
-            $allNotImportedPrices = array_merge($allNotImportedPrices, $batchNotImportedPrices);
+            // $batchNotImportedPrices = $this->createNotImportedPrices($prices, $transactionDetails);
+            // $allNotImportedPrices = array_merge($allNotImportedPrices, $batchNotImportedPrices);
 
-            $failedItems = $this->createFailedItems($batchNotImportedPrices);
+            // $failedItems = $this->createFailedItems($batchNotImportedPrices);
 
-            $this->transactionHistory->updateTransaction(
-                $this->contractId,
-                TransactionHistoryType::IMPORT_PRICES,
-                $transactionId,
-                $transactionDetails,
-                null,
-                $failedItems
-            );
+            // $this->transactionHistory->updateTransaction(
+            //     $this->contractId,
+            //     TransactionHistoryType::IMPORT_PRICES,
+            //     $transactionId,
+            //     $transactionDetails,
+            //     null,
+            //     $failedItems
+            // );
 
+            $allPrices.push($prices);
             $start += self::BATCH_SIZE;
             $prices = $this->proxy->importPrices($this->contractId, $start, self::BATCH_SIZE, $lastImportDate);
         }
 
-        $this->transactionHistory->finishTransaction(
-            $this->contractId,
-            TransactionHistoryStatus::FINISHED,
-            TransactionHistoryType::IMPORT_PRICES,
-            $transactionId,
-            null
-        );
+        // $this->transactionHistory->finishTransaction(
+        //     $this->contractId,
+        //     TransactionHistoryStatus::FINISHED,
+        //     TransactionHistoryType::IMPORT_PRICES,
+        //     $transactionId,
+        //     null
+        // );
 
-        return $allNotImportedPrices;
+        return $allPrices;
     }
 
     private function createNotImportedPrices($prices, &$transactionDetails)
