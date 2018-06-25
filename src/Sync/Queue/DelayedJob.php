@@ -72,7 +72,7 @@ class DelayedJob extends Job implements SystemJob
     /**
      * Run queue job execution
      */
-    public function execute()
+    public function execute($runCustomMethod = false)
     {
         if ($this->shouldDelayExecution()) {
             $this->delayExecution();

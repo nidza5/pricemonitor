@@ -50,12 +50,12 @@ class Importer
      *
      * @throws \Exception
      */
-    public function execute($transactionId)
+    public function execute($transactionId,$runCustomMethod = false)
     {
         $importStartedAtTimestamp = (new \DateTime())->getTimestamp();
 
         try {
-            return $this->updatePrices($transactionId, $this->getLastImportDate());
+            return $runCustomMethod == true ? $this->updatePricesCustomMethod($transactionId, $this->getLastImportDate()) : $this->updatePrices($transactionId, $this->getLastImportDate());
             if (!empty($errors)) {
                 $this->logErrors($errors);
             }
@@ -81,6 +81,31 @@ class Importer
      * @param \DateTime|null $lastImportDate Date time of last price import (leave empty or set null if there was no imports)
      * @return array List of import errors from price service
      */
+    private function updatePricesCustomMethod($transactionId, \DateTime $lastImportDate = null)
+    {
+        $start = 0;
+        $allPrices = [];
+
+        $prices = $this->proxy->importPrices($this->contractId, $start, self::BATCH_SIZE, $lastImportDate);
+
+        while (!empty($prices)) {
+           
+            $allPrices.push($prices);
+            $start += self::BATCH_SIZE;
+            $prices = $this->proxy->importPrices($this->contractId, $start, self::BATCH_SIZE, $lastImportDate);
+        }
+
+        return $allPrices;
+    }
+
+
+    /**
+     * Updates price in batches using price integration service
+     *
+     * @param $transactionId
+     * @param \DateTime|null $lastImportDate Date time of last price import (leave empty or set null if there was no imports)
+     * @return array List of import errors from price service
+     */
     private function updatePrices($transactionId, \DateTime $lastImportDate = null)
     {
         $start = 0;
@@ -90,40 +115,40 @@ class Importer
 
         while (!empty($prices)) {
             // /** @var TransactionHistoryDetail[] $formattedTransactionDetails */
-            // $transactionDetails = $this->transactionHistory->updateTransaction(
-            //     $this->contractId,
-            //     TransactionHistoryType::IMPORT_PRICES,
-            //     $transactionId,
-            //     $this->createImportDetailsBasedOnPrices($prices, $transactionId),
-            //     null
-            // );
+            $transactionDetails = $this->transactionHistory->updateTransaction(
+                $this->contractId,
+                TransactionHistoryType::IMPORT_PRICES,
+                $transactionId,
+                $this->createImportDetailsBasedOnPrices($prices, $transactionId),
+                null
+            );
 
-            // $batchNotImportedPrices = $this->createNotImportedPrices($prices, $transactionDetails);
-            // $allNotImportedPrices = array_merge($allNotImportedPrices, $batchNotImportedPrices);
+            $batchNotImportedPrices = $this->createNotImportedPrices($prices, $transactionDetails);
+            $allNotImportedPrices = array_merge($allNotImportedPrices, $batchNotImportedPrices);
 
-            // $failedItems = $this->createFailedItems($batchNotImportedPrices);
+            $failedItems = $this->createFailedItems($batchNotImportedPrices);
 
-            // $this->transactionHistory->updateTransaction(
-            //     $this->contractId,
-            //     TransactionHistoryType::IMPORT_PRICES,
-            //     $transactionId,
-            //     $transactionDetails,
-            //     null,
-            //     $failedItems
-            // );
+            $this->transactionHistory->updateTransaction(
+                $this->contractId,
+                TransactionHistoryType::IMPORT_PRICES,
+                $transactionId,
+                $transactionDetails,
+                null,
+                $failedItems
+            );
 
             $allPrices.push($prices);
             $start += self::BATCH_SIZE;
             $prices = $this->proxy->importPrices($this->contractId, $start, self::BATCH_SIZE, $lastImportDate);
         }
 
-        // $this->transactionHistory->finishTransaction(
-        //     $this->contractId,
-        //     TransactionHistoryStatus::FINISHED,
-        //     TransactionHistoryType::IMPORT_PRICES,
-        //     $transactionId,
-        //     null
-        // );
+        $this->transactionHistory->finishTransaction(
+            $this->contractId,
+            TransactionHistoryStatus::FINISHED,
+            TransactionHistoryType::IMPORT_PRICES,
+            $transactionId,
+            null
+        );
 
         return $allPrices;
     }

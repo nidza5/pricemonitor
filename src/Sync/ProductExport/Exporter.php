@@ -40,7 +40,7 @@ class Exporter
      * @param $transactionId
      * @throws Exception
      */
-    public function execute($transactionId)
+    public function execute($transactionId,$runCustomMethod = false)
     {
         try {
             $exportUniqueIdentifier = $this->exportProducts($transactionId);

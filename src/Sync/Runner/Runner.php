@@ -50,7 +50,7 @@ class Runner
     /**
      * Run queue job execution from queue
      */
-    public function run()
+    public function run($runCustomMethod = false)
     {
         $uniqueIdentifiers = [];
         $finalResult = [];
@@ -87,7 +87,7 @@ class Runner
 
                 $uniqueIdentifiers[] =  json_encode($queueJob);
 
-               $uniqueIdentifier =  $queueJob->execute();
+               $uniqueIdentifier =  $queueJob->execute($runCustomMethod);
                
                $uniqueIdentifiers[] = $uniqueIdentifier;
                 $this->queue->dequeue($queueJob);

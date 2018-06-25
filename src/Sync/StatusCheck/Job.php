@@ -53,7 +53,7 @@ class Job extends QueueJob
     /**
      * Run queue job execution
      */
-    public function execute()
+    public function execute($runCustomMethod = false)
     {
         $apiCredentials = ServiceRegister::getConfigService()->getCredentials();
         $checker = new Checker(

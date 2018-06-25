@@ -69,7 +69,7 @@ abstract class Job implements Serializable
     /**
      * Run queue job execution
      */
-    public abstract function execute();
+    public abstract function execute($runCustomMethod = false);
 
     public abstract function forceFail();
 
